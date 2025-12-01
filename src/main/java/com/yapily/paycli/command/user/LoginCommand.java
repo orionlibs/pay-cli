@@ -1,10 +1,13 @@
 package com.yapily.paycli.command.user;
 
+import com.yapily.paycli.utils.FileService;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -14,7 +17,12 @@ import org.springframework.shell.standard.ShellOption;
 public class LoginCommand
 {
     @Value("${cli.login.url}")
-    private String loginURL;
+    String loginURL;
+    @Value("${cli.configuration.path}")
+    String configurationPath;
+    @Value("${cli.configuration.file}")
+    String configurationFile;
+    @Autowired FileService fileService;
 
 
     @ShellMethod(key = "login")
@@ -57,26 +65,21 @@ public class LoginCommand
     private boolean saveConfigurationFile(String apiKey)
     {
         String userHome = System.getProperty("user.home");
-        Path configDir = Path.of(userHome, ".config", "yapilycli");
-        Path configFile = configDir.resolve("config.toml");
-        if(!Files.exists(configDir))
+        Optional<Path> configFile = fileService.resolveDirectoriesAndFile(configurationFile, userHome, configurationPath);
+        if(configFile.isPresent())
         {
             try
             {
-                Files.createDirectories(configDir);
+                String toml = "[auth]\n" + "api_key = \"" + apiKey + "\"\n";
+                Files.writeString(configFile.get(), toml);
+                return true;
             }
             catch(IOException e)
             {
                 return false;
             }
         }
-        try
-        {
-            String toml = "[auth]\n" + "api_key = \"" + apiKey + "\"\n";
-            Files.writeString(configFile, toml);
-            return true;
-        }
-        catch(IOException e)
+        else
         {
             return false;
         }

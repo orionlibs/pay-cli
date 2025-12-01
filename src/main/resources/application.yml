@@ -19,6 +19,9 @@ spring:
 cli:
   login:
     url: https://yapily.com
+  configuration:
+    path: .config/yapilycli
+    file: config.toml
 
 #logging:
 #  level:
