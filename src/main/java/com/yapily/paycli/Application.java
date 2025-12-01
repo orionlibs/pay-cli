@@ -18,6 +18,7 @@ public class Application
     {
         SpringApplication application = new SpringApplication(Application.class);
         application.setWebApplicationType(WebApplicationType.NONE);
+        application.setHeadless(false);
         application.run(args);
     }
 
