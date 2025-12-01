@@ -20,8 +20,9 @@ cli:
   login:
     url: https://yapily.com
   configuration:
-    path: .config/yapilycli
+    path: ${YAPILY_CONFIG_HOME:${user.home}/.config/yapilycli}
     file: config.toml
+
 
 #logging:
 #  level:

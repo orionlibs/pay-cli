@@ -64,8 +64,7 @@ public class LoginCommand
 
     private boolean saveConfigurationFile(String apiKey)
     {
-        String userHome = System.getProperty("user.home");
-        Optional<Path> configFile = fileService.resolveDirectoriesAndFile(configurationFile, userHome, configurationPath);
+        Optional<Path> configFile = fileService.resolveDirectoriesAndFile(configurationFile, configurationPath);
         if(configFile.isPresent())
         {
             try
